@@ -36,6 +36,7 @@ class _HomeViewState extends ConsumerState<_HomeView> {
         Expanded(
           child: ListView.builder(
             itemCount: nowPlayinMovies.length,
+            padding: EdgeInsets.zero,
             itemBuilder: (context, index) {
               final item = nowPlayinMovies[index];
               return ListTile(
