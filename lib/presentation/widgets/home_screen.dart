@@ -1,10 +1,12 @@
 import 'package:cinemapedia/domain/entities/movie.dart';
+import 'package:cinemapedia/presentation/provider/initial_loading_provider.dart';
 import 'package:cinemapedia/presentation/provider/movies_providers.dart';
 import 'package:cinemapedia/presentation/provider/movies_slideshow_provider.dart';
 import 'package:cinemapedia/presentation/widgets/buttom_bar/custom_buttom_navigation.dart';
-import 'package:cinemapedia/presentation/widgets/custom_appbar.dart';
+import 'package:cinemapedia/presentation/widgets/shared/custom_appbar.dart';
 import 'package:cinemapedia/presentation/widgets/movies/movies_horizontal_listview.dart';
 import 'package:cinemapedia/presentation/widgets/movies/movies_slide_show.dart';
+import 'package:cinemapedia/presentation/widgets/shared/full_screen_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -34,13 +36,21 @@ class _HomeViewState extends ConsumerState<_HomeView> {
     super.initState();
     ref.read(nowPlayingMoviesProvider.notifier).loadNexPage();
     ref.read(popularMoviesProvider.notifier).loadNexPage();
+    ref.read(upcomingMoviesProvider.notifier).loadNexPage();
+    ref.read(topRatedMoviesProvider.notifier).loadNexPage();
   }
 
   @override
   Widget build(BuildContext context) {
+    final initialLoading = ref.watch(isLoadingProvider);
+    if (initialLoading) return const FullScreenLoader();
+
     final nowPlayinMovies = ref.watch(nowPlayingMoviesProvider);
     final moviesSlider = ref.watch(moviesSlideShowProvider);
     final popularMovies = ref.watch(popularMoviesProvider);
+    final topRateMovies = ref.watch(topRatedMoviesProvider);
+    final upcomingMovies = ref.watch(upcomingMoviesProvider);
+
     return CustomScrollView(
       slivers: [
         const SliverAppBar(
@@ -55,6 +65,8 @@ class _HomeViewState extends ConsumerState<_HomeView> {
                 moviesSlider: moviesSlider,
                 nowPlayinMovies: nowPlayinMovies,
                 popularMovies: popularMovies,
+                upcomingMovies: upcomingMovies,
+                topRateMovies: topRateMovies,
                 ref: ref);
           }, childCount: 1),
         )
@@ -116,12 +128,16 @@ class _ColumSliverBody extends StatelessWidget {
   final List<Movie> moviesSlider;
   final List<Movie> nowPlayinMovies;
   final List<Movie> popularMovies;
+  final List<Movie> upcomingMovies;
+  final List<Movie> topRateMovies;
   final WidgetRef ref;
 
   const _ColumSliverBody({
     required this.moviesSlider,
     required this.nowPlayinMovies,
     required this.popularMovies,
+    required this.upcomingMovies,
+    required this.topRateMovies,
     required this.ref,
   });
 
@@ -139,11 +155,11 @@ class _ColumSliverBody extends StatelessWidget {
           },
         ),
         MoviesHorizontalListview(
-          movies: nowPlayinMovies,
+          movies: upcomingMovies,
           title: 'Proximamente',
           subtitle: 'En cine',
           loadNextPage: () {
-            ref.read(nowPlayingMoviesProvider.notifier).loadNexPage();
+            ref.read(upcomingMoviesProvider.notifier).loadNexPage();
           },
         ),
         MoviesHorizontalListview(
@@ -155,11 +171,11 @@ class _ColumSliverBody extends StatelessWidget {
           },
         ),
         MoviesHorizontalListview(
-          movies: nowPlayinMovies,
+          movies: topRateMovies,
           title: 'Mejor Calificadas',
           subtitle: 'Del Año',
           loadNextPage: () {
-            ref.read(nowPlayingMoviesProvider.notifier).loadNexPage();
+            ref.read(topRatedMoviesProvider.notifier).loadNexPage();
           },
         ),
         const SizedBox(
