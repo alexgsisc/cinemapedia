@@ -1,8 +1,9 @@
 import 'package:animate_do/animate_do.dart';
+import 'package:cinemapedia/config/helpers/human_format.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:flutter/material.dart';
 
-class MoviesHorizontalListview extends StatelessWidget {
+class MoviesHorizontalListview extends StatefulWidget {
   final List<Movie> movies;
   final String? title;
   final String? subtitle;
@@ -17,25 +18,53 @@ class MoviesHorizontalListview extends StatelessWidget {
   });
 
   @override
+  State<MoviesHorizontalListview> createState() =>
+      _MoviesHorizontalListviewState();
+}
+
+class _MoviesHorizontalListviewState extends State<MoviesHorizontalListview> {
+  final scrollerController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    scrollerController.addListener(() {
+      if (widget.loadNextPage == null) return;
+      if ((scrollerController.position.pixels + 200) >=
+          scrollerController.position.maxScrollExtent) {
+        debugPrint('Next page');
+        widget.loadNextPage!();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    scrollerController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SizedBox(
       //height: 350,
       height: MediaQuery.of(context).size.height * 0.45,
       child: Column(
         children: [
-          if (title != null || subtitle != null)
+          if (widget.title != null || widget.subtitle != null)
             _SectionHeader(
-              title: title,
-              subtitle: subtitle,
+              title: widget.title,
+              subtitle: widget.subtitle,
             ),
           Expanded(
             child: ListView.builder(
-              itemCount: movies.length,
+              controller: scrollerController,
+              itemCount: widget.movies.length,
               scrollDirection: Axis.horizontal,
               physics: const BouncingScrollPhysics(),
               itemBuilder: (context, index) {
                 return _ItemSlide(
-                  movie: movies[index],
+                  movie: widget.movies[index],
                 );
               },
             ),
@@ -112,7 +141,7 @@ class _ItemSlide extends StatelessWidget {
                 width: 10,
               ),
               Text(
-                '${movie.popularity}',
+                HumanFormat.number(movie.popularity),
                 style: textTheme.bodySmall,
               ),
             ],
