@@ -38,19 +38,48 @@ class _HomeViewState extends ConsumerState<_HomeView> {
   Widget build(BuildContext context) {
     final nowPlayinMovies = ref.watch(nowPlayingMoviesProvider);
     final moviesSlider = ref.watch(moviesSlideShowProvider);
-    return Column(
-      children: [
-        const CustomAppbar(),
-        MoviesSlideShow(movies: moviesSlider),
-        MoviesHorizontalListview(
-          movies: nowPlayinMovies,
-          title: 'En cines',
-          subtitle: 'Miercoles 27',
-          loadNextPage: () {
-            ref.read(nowPlayingMoviesProvider.notifier).loadNexPage();
-          },
-        ),
-      ],
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          const CustomAppbar(),
+          MoviesSlideShow(movies: moviesSlider),
+          MoviesHorizontalListview(
+            movies: nowPlayinMovies,
+            title: 'En cines',
+            subtitle: 'Miercoles 27',
+            loadNextPage: () {
+              ref.read(nowPlayingMoviesProvider.notifier).loadNexPage();
+            },
+          ),
+          MoviesHorizontalListview(
+            movies: nowPlayinMovies,
+            title: 'Proximamente',
+            subtitle: 'en cine',
+            loadNextPage: () {
+              ref.read(nowPlayingMoviesProvider.notifier).loadNexPage();
+            },
+          ),
+          MoviesHorizontalListview(
+            movies: nowPlayinMovies,
+            title: 'Populares',
+            subtitle: 'Mes',
+            loadNextPage: () {
+              ref.read(nowPlayingMoviesProvider.notifier).loadNexPage();
+            },
+          ),
+          MoviesHorizontalListview(
+            movies: nowPlayinMovies,
+            title: 'Mejor Calificadas',
+            subtitle: 'Del mes',
+            loadNextPage: () {
+              ref.read(nowPlayingMoviesProvider.notifier).loadNexPage();
+            },
+          ),
+          const SizedBox(
+            height: 30,
+          ),
+        ],
+      ),
     );
   }
 }
