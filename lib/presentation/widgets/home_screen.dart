@@ -33,12 +33,14 @@ class _HomeViewState extends ConsumerState<_HomeView> {
   void initState() {
     super.initState();
     ref.read(nowPlayingMoviesProvider.notifier).loadNexPage();
+    ref.read(popularMoviesProvider.notifier).loadNexPage();
   }
 
   @override
   Widget build(BuildContext context) {
     final nowPlayinMovies = ref.watch(nowPlayingMoviesProvider);
     final moviesSlider = ref.watch(moviesSlideShowProvider);
+    final popularMovies = ref.watch(popularMoviesProvider);
     return CustomScrollView(
       slivers: [
         const SliverAppBar(
@@ -52,6 +54,7 @@ class _HomeViewState extends ConsumerState<_HomeView> {
             return _ColumSliverBody(
                 moviesSlider: moviesSlider,
                 nowPlayinMovies: nowPlayinMovies,
+                popularMovies: popularMovies,
                 ref: ref);
           }, childCount: 1),
         )
@@ -110,15 +113,17 @@ class _HomeViewState extends ConsumerState<_HomeView> {
 }
 
 class _ColumSliverBody extends StatelessWidget {
+  final List<Movie> moviesSlider;
+  final List<Movie> nowPlayinMovies;
+  final List<Movie> popularMovies;
+  final WidgetRef ref;
+
   const _ColumSliverBody({
     required this.moviesSlider,
     required this.nowPlayinMovies,
+    required this.popularMovies,
     required this.ref,
   });
-
-  final List<Movie> moviesSlider;
-  final List<Movie> nowPlayinMovies;
-  final WidgetRef ref;
 
   @override
   Widget build(BuildContext context) {
@@ -142,11 +147,11 @@ class _ColumSliverBody extends StatelessWidget {
           },
         ),
         MoviesHorizontalListview(
-          movies: nowPlayinMovies,
+          movies: popularMovies,
           title: 'Populares',
           subtitle: 'Del Mes',
           loadNextPage: () {
-            ref.read(nowPlayingMoviesProvider.notifier).loadNexPage();
+            ref.read(popularMoviesProvider.notifier).loadNexPage();
           },
         ),
         MoviesHorizontalListview(

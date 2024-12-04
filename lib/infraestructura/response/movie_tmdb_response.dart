@@ -13,14 +13,14 @@ String movieTmdbResponseToJson(MovieTmdbResponse data) =>
     json.encode(data.toJson());
 
 class MovieTmdbResponse {
-  final Dates dates;
+  final Dates? dates;
   final int page;
   final List<MoviewRemote> results;
   final int totalPages;
   final int totalResults;
 
   MovieTmdbResponse({
-    required this.dates,
+    this.dates,
     required this.page,
     required this.results,
     required this.totalPages,
@@ -29,7 +29,7 @@ class MovieTmdbResponse {
 
   factory MovieTmdbResponse.fromJson(Map<String, dynamic> json) =>
       MovieTmdbResponse(
-        dates: Dates.fromJson(json["dates"]),
+        dates: json["dates"] != null ? Dates.fromJson(json["dates"]) : null,
         page: json["page"],
         results: List<MoviewRemote>.from(
             json["results"].map((x) => MoviewRemote.fromJson(x))),
@@ -38,7 +38,7 @@ class MovieTmdbResponse {
       );
 
   Map<String, dynamic> toJson() => {
-        "dates": dates.toJson(),
+        "dates": dates?.toJson(),
         "page": page,
         "results": List<dynamic>.from(results.map((x) => x.toJson())),
         "total_pages": totalPages,
