@@ -32,7 +32,6 @@ class _MoviesHorizontalListviewState extends State<MoviesHorizontalListview> {
       if (widget.loadNextPage == null) return;
       if ((scrollerController.position.pixels + 200) >=
           scrollerController.position.maxScrollExtent) {
-        debugPrint('Next page');
         widget.loadNextPage!();
       }
     });
