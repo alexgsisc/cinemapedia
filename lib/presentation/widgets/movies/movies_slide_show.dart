@@ -39,7 +39,6 @@ class MoviesSlideShow extends StatelessWidget {
 class _ItemSlide extends StatelessWidget {
   final Movie movie;
   const _ItemSlide({
-    super.key,
     required this.movie,
   });
 
